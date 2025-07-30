@@ -1,0 +1,36 @@
+#!name = TikTok 解鎖精簡版
+#!desc = 移除 TikTok 視頻水印並手動選擇解鎖節點
+#!author = ChatGPT 优化
+#!homepage = https://github.com/Semporia/TikTok-Unlock
+#!icon = https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/TikTok.png
+#!select = 解鎖地區,日本,美國,英國,韓國,台灣,新加坡,馬來西亞,越南
+
+[Rule]
+# ➤ 所有與 TikTok 相關的請求均走「PROXY」節點
+DOMAIN-KEYWORD, tiktok, PROXY
+DOMAIN-KEYWORD, muscdn, PROXY
+DOMAIN-KEYWORD, musical.ly, PROXY
+DOMAIN-KEYWORD, byteoversea, PROXY
+DOMAIN-SUFFIX, capcut.com, PROXY
+DOMAIN-SUFFIX, pstatp.com, PROXY
+DOMAIN-SUFFIX, bytecdn.net, PROXY
+DOMAIN-SUFFIX, snssdk.com, PROXY
+DOMAIN-SUFFIX, bytedapm.com, PROXY
+
+# ➤ TikTok 水印和區域限制過濾
+DOMAIN, api-va.tiktokv.com, PROXY
+DOMAIN, tnc16-platform-va.tiktokv.com,PROXY
+DOMAIN, tnc16-platform-oversea.tiktokv.com, PROXY
+
+[Rewrite]
+# 移除 TikTok 廣告
+^https:\/\/api-va\.tiktokv\.com\/api\/ad\/ reject
+
+# 移除域名獲取行為（防止 TikTok 自動探測區域）
+^https:\/\/tnc\d+-platform-\w+\.tiktokv\.com\/get_domains\/ reject
+
+[Script]
+http-request ^https?:\/\/.+\.(tiktokv|tiktokcdn)\.com\/.+(region\d?=CN|&mcc_mnc=\d+) script-path = https://raw.githubusercontent.com/Semporia/TikTok-Unlock/refs/heads/master/Loon/TikTok.js, tag = TikTok 解鎖
+
+[MITM]
+hostname = *.tiktokv.com, *.tiktokcdn.com, *.byteoversea.com, *.tik-tokapi.com
