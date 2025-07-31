@@ -1,0 +1,34 @@
+#!name = TikTok 解鎖兼容版
+#!desc = 解鎖地區限制 + 保留登入功能
+#!author = ChatGPT優化
+#!homepage = https://github.com/Semporia/TikTok-Unlock
+#!icon = https://raw.githubusercontent.com/Semporia/Hand-Painted-icon/master/Social_Media/TikTok.png
+
+[Rule]
+# ➤ TikTok 相關域名代理（避免走直连）
+DOMAIN-KEYWORD, tiktok, PROXY
+DOMAIN-KEYWORD, muscdn, PROXY
+DOMAIN-KEYWORD, musical.ly, PROXY
+DOMAIN-KEYWORD, byteoversea, PROXY
+DOMAIN-SUFFIX, capcut.com, PROXY
+DOMAIN-SUFFIX, pstatp.com, PROXY
+DOMAIN-SUFFIX, bytecdn.net, PROXY
+DOMAIN-SUFFIX, snssdk.com, PROXY
+DOMAIN-SUFFIX, bytedapm.com, PROXY
+
+# ➤ 避免與抖音共用域名衝突（可保留）
+DOMAIN, pitaya.bytedance.com, PROXY
+
+[Rewrite]
+# ➤ 可選：僅移除廣告，不處理登入與國碼
+^https:\/\/api-va\.tiktokv\.com\/api\/ad\/ reject
+
+# ⚠️ 登入可能依賴 region、mcc 參數，因此此項暫時**不 reject**
+# ^https:\/\/tnc\d+-platform-\w+\.tiktokv\.com\/get_domains\/ reject
+
+[Script]
+# 僅移除 region=CN、mcc_mnc= 中的限制，不攔截所有請求，保留登入能力
+http-request ^https?:\/\/.+\.(tiktokv|tiktokcdn)\.com\/.+(region\d?=CN|&mcc_mnc=\d+) script-path = https://raw.githubusercontent.com/Semporia/TikTok-Unlock/refs/heads/master/Loon/TikTok.js, tag = TikTok 解鎖
+
+[MITM]
+hostname = *.tiktokv.com, *.tiktokcdn.com, *.byteoversea.com, *.tik-tokapi.com
